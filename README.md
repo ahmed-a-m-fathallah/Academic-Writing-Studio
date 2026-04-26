@@ -102,4 +102,4 @@ kindly cite as :
 
 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under themApache License Version 2.0 - see the LICENSE file for details.
