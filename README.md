@@ -5,6 +5,7 @@ Academic Writing Studio is a powerful, locally-hosted research and writing envir
 Built with Python (Flask) and a vanilla HTML/JS frontend, the application prioritizes a human-like, active academic writing style and keeps your unpublished manuscripts entirely private on your local machine.
 
 dependecies:
+  
   pip install flask requests beautifulsoup4 nltk language-tool-python
 
 ✨ Key Features
