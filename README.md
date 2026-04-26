@@ -98,6 +98,8 @@ Saving: Click the Save (.aws) button in the header. This generates a .aws JSON f
 Contributions, issues, and feature requests are welcome!
 If you are an academic, developer, or NLP enthusiast looking to improve the extraction algorithms or add new citation formats, feel free to fork the repository and submit a pull request.
 
+kindly cite as : 
+
 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
