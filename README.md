@@ -1,4 +1,4 @@
-🏛️ Academic Writing Studio
+## Academic Writing Studio
 
 Academic Writing Studio is a powerful, locally-hosted research and writing environment designed specifically for academics, urban planners, and researchers. It bridges the gap between drafting manuscripts and conducting complex literature reviews by integrating advanced Natural Language Processing (NLP), multi-source literature crawlers, and a distraction-free word processor into a single, cohesive interface.
 
