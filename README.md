@@ -6,7 +6,7 @@ Built with Python (Flask) and a vanilla HTML/JS frontend, the application priori
 
 dependecies:
   
-  pip install flask requests beautifulsoup4 nltk language-tool-python
+    pip install flask requests beautifulsoup4 nltk language-tool-python
 
 ✨ Key Features
 
