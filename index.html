@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-scheme="midnight">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AcadWrite — Academic Writing Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════════
+   DESIGN TOKENS — COLOR SCHEMES
+═══════════════════════════════════════════════════════ */
+:root {
+  --radius: 8px;
+  --radius-lg: 14px;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Lora', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --trans: all 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+/* DARK SCHEMES */
+[data-scheme="midnight"] {
+  --bg: #0c0e14; --bg2: #12151e; --bg3: #1a1f2e;
+  --bg4: #222840; --surface: #1e2335;
+  --border: #2d3555; --border2: #3d4870;
+  --text: #e8ecf4; --text2: #9ba8c8; --text3: #5d6a8a;
+  --accent: #7c9ef5; --accent2: #5b7de8; --accent3: #a0b8ff;
+  --gold: #c9a84c; --red: #e05252; --green: #52c07a;
+  --shadow: 0 4px 24px rgba(0,0,10,.6);
+  --glow: 0 0 20px rgba(124,158,245,.18);
+}
+[data-scheme="forest"] {
+  --bg: #080f0a; --bg2: #0e1812; --bg3: #14231a;
+  --bg4: #1c3125; --surface: #162b1e;
+  --border: #25432d; --border2: #345c3f;
+  --text: #e4eee7; --text2: #8fb899; --text3: #4d7558;
+  --accent: #5ebc8a; --accent2: #3da06e; --accent3: #84d4a8;
+  --gold: #c4a040; --red: #e06060; --green: #5ebc8a;
+  --shadow: 0 4px 24px rgba(0,8,2,.6);
+  --glow: 0 0 20px rgba(94,188,138,.15);
+}
+[data-scheme="crimson"] {
+  --bg: #0f0808; --bg2: #180e0e; --bg3: #231414;
+  --bg4: #311c1c; --surface: #291515;
+  --border: #3f2020; --border2: #5a2e2e;
+  --text: #f0e8e8; --text2: #c49494; --text3: #8a5a5a;
+  --accent: #e06060; --accent2: #c44040; --accent3: #f08080;
+  --gold: #d4a040; --red: #ff5252; --green: #5ec080;
+  --shadow: 0 4px 24px rgba(10,0,0,.6);
+  --glow: 0 0 20px rgba(224,96,96,.18);
+}
+[data-scheme="amber"] {
+  --bg: #0e0b06; --bg2: #17120a; --bg3: #221a0f;
+  --bg4: #2e2315; --surface: #281f10;
+  --border: #3d2e15; --border2: #5a4420;
+  --text: #f2ebda; --text2: #c8a870; --text3: #8a6a3a;
+  --accent: #d4944a; --accent2: #b87830; --accent3: #f0b870;
+  --gold: #e0b040; --red: #d45050; --green: #60c070;
+  --shadow: 0 4px 24px rgba(8,5,0,.6);
+  --glow: 0 0 20px rgba(212,148,74,.15);
+}
+/* LIGHT SCHEMES */
+[data-theme="light"][data-scheme="pearl"] {
+  --bg: #f8f6f1; --bg2: #f0ede5; --bg3: #e8e4d8;
+  --bg4: #ddd8c8; --surface: #faf8f4;
+  --border: #d0cabb; --border2: #b8b0a0;
+  --text: #1a1812; --text2: #5a5040; --text3: #8a7d6a;
+  --accent: #4a6eb8; --accent2: #3358a0; --accent3: #6a8ed0;
+  --gold: #9a7020; --red: #b83030; --green: #3a9060;
+  --shadow: 0 4px 24px rgba(80,60,20,.12);
+  --glow: 0 0 20px rgba(74,110,184,.12);
+}
+[data-theme="light"][data-scheme="sky"] {
+  --bg: #f0f5fb; --bg2: #e8f0f8; --bg3: #dce8f4;
+  --bg4: #ccdcee; --surface: #f5f8fd;
+  --border: #bdd0e8; --border2: #a0bcdc;
+  --text: #0e1820; --text2: #3a5070; --text3: #7090b0;
+  --accent: #2c7ce0; --accent2: #1a64c4; --accent3: #5098f0;
+  --gold: #c08830; --red: #c84040; --green: #288850;
+  --shadow: 0 4px 24px rgba(20,50,100,.1);
+  --glow: 0 0 20px rgba(44,124,224,.12);
+}
+[data-theme="light"][data-scheme="sage"] {
+  --bg: #f2f5f0; --bg2: #e8ece4; --bg3: #dde3d8;
+  --bg4: #cfd8c8; --surface: #f6f8f4;
+  --border: #bec9b8; --border2: #a4b49c;
+  --text: #121810; --text2: #445040; --text3: #708068;
+  --accent: #38885a; --accent2: #286a44; --accent3: #5aac78;
+  --gold: #a87828; --red: #c04040; --green: #38885a;
+  --shadow: 0 4px 24px rgba(20,40,10,.1);
+  --glow: 0 0 20px rgba(56,136,90,.12);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; height: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+input, textarea, select { font-family: inherit; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent3); }
+
+/* ═══════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════ */
+#topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 18px;
+  height: 52px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 100;
+}
+#logo {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+#logo span { color: var(--gold); font-style: italic; }
+
+.tab-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  color: var(--text2);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: var(--trans);
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text); background: var(--bg3); }
+.tab-btn.active {
+  color: var(--accent);
+  background: var(--bg3);
+  border-color: var(--border);
+}
+.tab-btn .icon { margin-right: 5px; font-size: 0.9em; }
+
+.spacer { flex: 1; }
+
+#topbar-actions { display: flex; align-items: center; gap: 8px; }
+.top-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  background: var(--bg3);
+  transition: var(--trans);
+}
+.top-btn:hover { color: var(--text); border-color: var(--border2); }
+.top-btn.primary {
+  background: var(--accent2);
+  color: #fff;
+  border-color: transparent;
+}
+.top-btn.primary:hover { background: var(--accent); }
+
+/* Main workspace */
+#workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Panels */
+.panel {
+  display: none;
+  flex: 1;
+  overflow: hidden;
+}
+.panel.active { display: flex; }
+
+/* ═══════════════════════════════════════════════════════
+   EDITOR PANEL
+═══════════════════════════════════════════════════════ */
+#editor-panel {
+  flex-direction: row;
+}
+#editor-sidebar {
+  width: 240px;
+  min-width: 200px;
+  max-width: 320px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.2s;
+}
+#editor-sidebar.collapsed { width: 0; min-width: 0; }
+
+.sidebar-section {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+}
+.sidebar-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 14px 6px;
+}
+.sidebar-btn {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 7px 14px;
+  font-size: 0.82rem;
+  color: var(--text2);
+  text-align: left;
+  transition: var(--trans);
+  border-radius: 0;
+}
+.sidebar-btn:hover { background: var(--bg3); color: var(--text); }
+.sidebar-btn .si { font-size: 1em; width: 18px; text-align: center; }
+.sidebar-btn.active-sn { background: var(--bg3); color: var(--accent); }
+
+#editor-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#editor-toolbar {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  padding: 6px 12px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.toolbar-sep {
+  width: 1px; height: 20px;
+  background: var(--border);
+  margin: 0 4px;
+}
+.toolbar-btn {
+  width: 30px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  color: var(--text2);
+  transition: var(--trans);
+}
+.toolbar-btn:hover { background: var(--bg3); color: var(--text); }
+.toolbar-btn.active { background: var(--bg4); color: var(--accent); }
+.toolbar-select {
+  padding: 3px 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+#editor-wrap {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+#editor-area {
+  flex: 1;
+  padding: 40px 60px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--text);
+  background: var(--bg);
+  border: none;
+  outline: none;
+  resize: none;
+  overflow-y: auto;
+  min-height: 0;
+}
+#editor-area::placeholder { color: var(--text3); font-style: italic; }
+
+/* Right sidebar for suggestions */
+#suggestion-panel {
+  width: 260px;
+  min-width: 220px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.2s;
+}
+#suggestion-panel.collapsed { width: 0; min-width: 0; }
+
+.sugg-section {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.sugg-section-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.synonym-chip {
+  display: inline-block;
+  padding: 3px 9px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin: 2px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+.synonym-chip:hover {
+  background: var(--accent2);
+  color: #fff;
+  border-color: transparent;
+}
+
+.phrase-item {
+  padding: 6px 10px;
+  background: var(--bg3);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  color: var(--text2);
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: var(--trans);
+  border: 1px solid transparent;
+}
+.phrase-item:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* Stats bar */
+#stats-bar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 5px 16px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+.stat-item { display: flex; align-items: center; gap: 5px; }
+.stat-val { color: var(--text2); font-weight: 600; }
+.readability-bar {
+  height: 4px; border-radius: 2px; background: var(--bg3);
+  flex: 1; max-width: 80px;
+}
+.readability-fill {
+  height: 100%; border-radius: 2px;
+  background: var(--green);
+  transition: width 0.5s;
+}
+
+/* Spell error highlight */
+.spell-error-line {
+  border-bottom: 2px solid var(--red);
+}
+
+/* ═══════════════════════════════════════════════════════
+   PDF PANEL
+═══════════════════════════════════════════════════════ */
+#pdf-panel {
+  flex-direction: row;
+}
+#pdf-list-col {
+  width: 220px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#pdf-list-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+#pdf-list-header h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text2);
+}
+#pdf-list { flex: 1; overflow-y: auto; }
+.pdf-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--trans);
+}
+.pdf-item:hover, .pdf-item.active { background: var(--bg3); }
+.pdf-item.active { border-left: 3px solid var(--accent); }
+.pdf-item-name {
+  font-size: 0.82rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pdf-item-meta {
+  font-size: 0.72rem;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+#pdf-viewer-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#pdf-viewer-toolbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#pdf-canvas-wrap {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: var(--bg);
+}
+#pdf-canvas-wrap img {
+  max-width: 100%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+#pdf-placeholder {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex: 1;
+  color: var(--text3);
+  font-size: 0.9rem;
+  gap: 12px;
+}
+#pdf-placeholder .big-icon { font-size: 3rem; opacity: 0.3; }
+
+#pdf-notes-col {
+  width: 260px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#pdf-notes-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text2);
+}
+#pdf-notes-area {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  padding: 12px;
+}
+#pdf-text-extract {
+  height: 200px;
+  border-top: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  color: var(--text3);
+  line-height: 1.6;
+}
+.extract-title {
+  font-size: 0.72rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SEARCH PANEL
+═══════════════════════════════════════════════════════ */
+#search-panel { flex-direction: column; }
+#search-top {
+  padding: 16px 20px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#search-top h2 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+#search-row { display: flex; gap: 8px; }
+#search-input {
+  flex: 1;
+  padding: 9px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#search-input:focus { border-color: var(--accent); }
+.search-go-btn {
+  padding: 9px 18px;
+  background: var(--accent2);
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: var(--trans);
+}
+.search-go-btn:hover { background: var(--accent); }
+
+#source-toggles { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.source-toggle {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  background: var(--bg3);
+  cursor: pointer;
+  transition: var(--trans);
+  user-select: none;
+}
+.source-toggle.on {
+  background: var(--accent2);
+  color: #fff;
+  border-color: transparent;
+}
+
+#search-results-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+#search-spinner {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  color: var(--text3);
+  font-size: 0.9rem;
+}
+#search-spinner.show { display: block; }
+.spinner-ring {
+  display: inline-block;
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#results-table-wrap { overflow-x: auto; }
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+#results-table th {
+  padding: 10px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+#results-table td {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+}
+#results-table tr:hover td { background: var(--bg3); }
+#results-table .result-title { color: var(--text); font-weight: 500; }
+#results-table .result-source {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: var(--bg4);
+  color: var(--accent3);
+  white-space: nowrap;
+}
+.copy-cite-btn {
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.74rem;
+  color: var(--text3);
+  transition: var(--trans);
+  white-space: nowrap;
+}
+.copy-cite-btn:hover { color: var(--accent); border-color: var(--accent); }
+#cite-style-select {
+  padding: 5px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+/* ═══════════════════════════════════════════════════════
+   BRAINSTORM PANEL
+═══════════════════════════════════════════════════════ */
+#brainstorm-panel { flex-direction: row; overflow: hidden; }
+#brainstorm-tools {
+  width: 260px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 12px;
+}
+#brainstorm-main { flex: 1; overflow-y: auto; padding: 20px; }
+
+.brainstorm-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.brainstorm-card h4 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.topic-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.85rem;
+  outline: none;
+  margin-bottom: 8px;
+}
+.topic-input:focus { border-color: var(--accent); }
+.gen-btn {
+  width: 100%;
+  padding: 8px;
+  background: var(--accent2);
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: var(--trans);
+}
+.gen-btn:hover { background: var(--accent); }
+
+#outline-output {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--text2);
+  white-space: pre-wrap;
+  overflow-y: auto;
+  min-height: 200px;
+  margin-bottom: 12px;
+}
+#outline-output:empty::before {
+  content: 'Generate an outline above to see it here...';
+  color: var(--text3);
+  font-style: italic;
+}
+
+/* Mind map canvas */
+#mindmap-canvas {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 360px;
+  margin-bottom: 12px;
+}
+
+/* Template gallery */
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+.template-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+.template-card:hover {
+  border-color: var(--accent);
+  background: var(--bg4);
+}
+.template-card h5 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+.template-card p {
+  font-size: 0.76rem;
+  color: var(--text3);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SETTINGS PANEL
+═══════════════════════════════════════════════════════ */
+#settings-panel { flex-direction: column; overflow-y: auto; padding: 24px; }
+.settings-section {
+  max-width: 700px;
+  margin-bottom: 28px;
+}
+.settings-section h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+.theme-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.theme-chip {
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: var(--trans);
+  display: flex; align-items: center; gap: 8px;
+}
+.theme-chip.active { border-color: var(--accent); }
+.theme-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+
+.scheme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.scheme-card {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: var(--trans);
+}
+.scheme-card.active { border-color: var(--accent); }
+.scheme-preview {
+  display: flex; gap: 4px; margin-bottom: 6px;
+}
+.scheme-dot { width: 18px; height: 18px; border-radius: 50%; }
+.scheme-label { font-size: 0.8rem; color: var(--text2); }
+
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.setting-label { font-size: 0.87rem; color: var(--text2); }
+.setting-control select, .setting-control input[type=range] {
+  padding: 5px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+/* Font size control */
+#font-size-val { color: var(--accent); font-size: 0.82rem; margin-left: 8px; }
+
+/* Toggle switch */
+.toggle-switch {
+  position: relative; display: inline-block;
+  width: 40px; height: 22px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg4);
+  border-radius: 11px;
+  transition: 0.3s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  left: 3px; bottom: 3px;
+  background: var(--text3);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--accent2); }
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(18px);
+  background: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SESSIONS PANEL (in sidebar)
+═══════════════════════════════════════════════════════ */
+#sessions-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+#sessions-modal.show { display: flex; }
+.modal-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 560px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+}
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-header h3 { font-family: var(--font-display); font-size: 1.05rem; }
+.modal-close {
+  font-size: 1.2rem; color: var(--text3);
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  transition: var(--trans);
+}
+.modal-close:hover { background: var(--bg3); color: var(--text); }
+.modal-body { flex: 1; overflow-y: auto; padding: 14px 20px; }
+.modal-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+
+.session-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+.session-item:hover { border-color: var(--accent); }
+.session-item-info h4 { font-size: 0.88rem; color: var(--text); }
+.session-item-info p { font-size: 0.76rem; color: var(--text3); margin-top: 2px; }
+.session-item-actions { display: flex; gap: 6px; }
+.sess-btn {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.76rem;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  transition: var(--trans);
+}
+.sess-btn:hover { color: var(--accent); border-color: var(--accent); }
+.sess-btn.del:hover { color: var(--red); border-color: var(--red); }
+
+/* ═══════════════════════════════════════════════════════
+   TOAST NOTIFICATIONS
+═══════════════════════════════════════════════════════ */
+#toast-container {
+  position: fixed; bottom: 20px; right: 20px;
+  z-index: 2000;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.toast {
+  padding: 10px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.83rem;
+  box-shadow: var(--shadow);
+  animation: slideIn 0.25s ease;
+  max-width: 280px;
+}
+.toast.success { border-left-color: var(--green); }
+.toast.error { border-left-color: var(--red); }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* ═══════════════════════════════════════════════════════
+   UPLOAD ZONE
+═══════════════════════════════════════════════════════ */
+#upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  color: var(--text3);
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: var(--trans);
+  margin-bottom: 8px;
+}
+#upload-zone:hover, #upload-zone.dragover {
+  border-color: var(--accent);
+  background: var(--bg3);
+  color: var(--text2);
+}
+#upload-zone .up-icon { font-size: 1.5rem; margin-bottom: 6px; }
+
+/* Autocomplete dropdown */
+#autocomplete-dropdown {
+  position: absolute;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 500;
+  min-width: 260px;
+  display: none;
+}
+.ac-item {
+  padding: 8px 14px;
+  font-size: 0.83rem;
+  color: var(--text2);
+  cursor: pointer;
+  transition: var(--trans);
+}
+.ac-item:hover { background: var(--bg3); color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  #editor-sidebar { width: 0; }
+  #suggestion-panel { width: 0; }
+  #pdf-notes-col { width: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════ TOP BAR ══════════════════════════════ -->
+<div id="topbar">
+  <div id="logo">Acad<span>Write</span></div>
+
+  <button class="tab-btn active" data-tab="editor" onclick="switchTab('editor', this)">
+    <span class="icon">✍️</span>Editor
+  </button>
+  <button class="tab-btn" data-tab="pdf" onclick="switchTab('pdf', this)">
+    <span class="icon">📄</span>PDF Viewer
+  </button>
+  <button class="tab-btn" data-tab="search" onclick="switchTab('search', this)">
+    <span class="icon">🔍</span>Source Search
+  </button>
+  <button class="tab-btn" data-tab="brainstorm" onclick="switchTab('brainstorm', this)">
+    <span class="icon">🧠</span>Brainstorm
+  </button>
+  <button class="tab-btn" data-tab="settings" onclick="switchTab('settings', this)">
+    <span class="icon">⚙️</span>Settings
+  </button>
+
+  <div class="spacer"></div>
+  <div id="topbar-actions">
+    <button class="top-btn" onclick="showSessions()">📂 Sessions</button>
+    <button class="top-btn primary" onclick="saveSession()">💾 Save</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ WORKSPACE ══════════════════════════════ -->
+<div id="workspace">
+
+  <!-- ─────── EDITOR PANEL ─────── -->
+  <div class="panel active" id="editor-panel">
+
+    <!-- Left sidebar -->
+    <div id="editor-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Templates</div>
+        <button class="sidebar-btn" onclick="loadTemplate('abstract')">
+          <span class="si">📝</span>Abstract
+        </button>
+        <button class="sidebar-btn" onclick="loadTemplate('introduction')">
+          <span class="si">📖</span>Introduction
+        </button>
+        <button class="sidebar-btn" onclick="loadTemplate('literature_review')">
+          <span class="si">📚</span>Literature Review
+        </button>
+        <button class="sidebar-btn" onclick="loadTemplate('methodology')">
+          <span class="si">🔬</span>Methodology
+        </button>
+        <button class="sidebar-btn" onclick="loadTemplate('conclusion')">
+          <span class="si">🏁</span>Conclusion
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">Transitions</div>
+        <div id="transition-sidebar" style="padding: 6px 10px;"></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">Citation Format</div>
+        <div style="padding: 6px 10px;">
+          <select class="toolbar-select" id="cite-style-sidebar" style="width:100%; margin-bottom:6px;">
+            <option value="apa">APA 7th</option>
+            <option value="mla">MLA</option>
+            <option value="chicago">Chicago</option>
+            <option value="harvard">Harvard</option>
+            <option value="ieee">IEEE</option>
+          </select>
+          <button class="gen-btn" onclick="showCiteHelper()" style="font-size:.78rem; padding:6px;">
+            Format Citation
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor main -->
+    <div id="editor-main">
+      <div id="editor-toolbar">
+        <select class="toolbar-select" id="heading-select" onchange="applyHeading(this.value)">
+          <option value="">Paragraph</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+        </select>
+        <div class="toolbar-sep"></div>
+        <button class="toolbar-btn" title="Bold" onclick="formatDoc('bold')"><b>B</b></button>
+        <button class="toolbar-btn" title="Italic" onclick="formatDoc('italic')"><i>I</i></button>
+        <button class="toolbar-btn" title="Underline" onclick="formatDoc('underline')"><u>U</u></button>
+        <div class="toolbar-sep"></div>
+        <button class="toolbar-btn" title="Bullet List" onclick="formatDoc('insertUnorderedList')">≡</button>
+        <button class="toolbar-btn" title="Numbered List" onclick="formatDoc('insertOrderedList')">⒈</button>
+        <div class="toolbar-sep"></div>
+        <button class="toolbar-btn" title="Undo" onclick="formatDoc('undo')">↩</button>
+        <button class="toolbar-btn" title="Redo" onclick="formatDoc('redo')">↪</button>
+        <div class="toolbar-sep"></div>
+        <button class="toolbar-btn" title="Check Spelling" onclick="runSpellCheck()">✓</button>
+        <button class="toolbar-btn" title="Word Suggestions" onclick="getAutoComplete()">💡</button>
+        <div class="toolbar-sep"></div>
+        <button class="toolbar-btn" title="Toggle Sidebar" onclick="toggleSidebar('editor-sidebar')">☰</button>
+        <button class="toolbar-btn" title="Toggle Suggestions" onclick="toggleSidebar('suggestion-panel')" style="margin-left:auto;">→</button>
+      </div>
+
+      <div id="editor-wrap">
+        <div id="editor-area"
+             contenteditable="true"
+             spellcheck="false"
+             data-placeholder="Start writing your academic work here...&#10;&#10;Select a word to get synonyms. Use the templates on the left to insert sections. Press Ctrl+S to save."
+             onmouseup="onWordSelect()"
+             onkeyup="onEditorKeyUp(event)"
+             oninput="onEditorInput()">
+        </div>
+        <div id="autocomplete-dropdown"></div>
+      </div>
+
+      <div id="stats-bar">
+        <div class="stat-item">Words: <span class="stat-val" id="stat-words">0</span></div>
+        <div class="stat-item">Sentences: <span class="stat-val" id="stat-sents">0</span></div>
+        <div class="stat-item">Paragraphs: <span class="stat-val" id="stat-paras">0</span></div>
+        <div class="stat-item">~<span class="stat-val" id="stat-read">0</span> min read</div>
+        <div class="stat-item" style="gap:6px;">
+          Readability:
+          <div class="readability-bar">
+            <div class="readability-fill" id="readability-fill" style="width:0%"></div>
+          </div>
+          <span class="stat-val" id="stat-readlevel">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: synonym / suggestions panel -->
+    <div id="suggestion-panel">
+      <div class="sugg-section">
+        <div class="sugg-section-title">Synonyms for "<span id="selected-word-label">—</span>"</div>
+        <div id="synonyms-container">
+          <span style="font-size:.78rem; color:var(--text3); font-style:italic;">
+            Double-click or select a word in the editor
+          </span>
+        </div>
+      </div>
+      <div class="sugg-section">
+        <div class="sugg-section-title">Academic Phrases</div>
+        <div id="phrases-container"></div>
+      </div>
+      <div class="sugg-section" style="flex:1; overflow-y:auto;">
+        <div class="sugg-section-title">Spell Errors</div>
+        <div id="spell-errors-list" style="font-size:.78rem; color:var(--text3);">
+          Click ✓ in toolbar to check
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────── PDF PANEL ─────── -->
+  <div class="panel" id="pdf-panel">
+    <div id="pdf-list-col">
+      <div id="pdf-list-header">
+        <h3>📄 PDFs</h3>
+        <button class="top-btn" onclick="document.getElementById('pdf-upload-input').click()">+ Add</button>
+        <input type="file" id="pdf-upload-input" accept=".pdf" multiple style="display:none" onchange="uploadPDFs(this)"/>
+      </div>
+      <div id="pdf-list">
+        <div id="upload-zone" ondragover="e=event,e.preventDefault(),this.classList.add('dragover')"
+             ondragleave="this.classList.remove('dragover')"
+             ondrop="onPdfDrop(event)"
+             onclick="document.getElementById('pdf-upload-input').click()">
+          <div class="up-icon">📤</div>
+          Drop PDFs here<br>or click to upload
+        </div>
+      </div>
+    </div>
+
+    <div id="pdf-viewer-col">
+      <div id="pdf-viewer-toolbar">
+        <button class="top-btn" onclick="pdfNav(-1)">← Prev</button>
+        <span style="font-size:.82rem; color:var(--text2); margin: 0 8px;">
+          Page <span id="pdf-page-num">—</span> / <span id="pdf-page-total">—</span>
+        </span>
+        <button class="top-btn" onclick="pdfNav(1)">Next →</button>
+        <div style="flex:1"></div>
+        <button class="top-btn" onclick="pdfZoom(-0.25)">🔍−</button>
+        <button class="top-btn" onclick="pdfZoom(0.25)">🔍+</button>
+        <button class="top-btn" onclick="extractToEditor()">→ Editor</button>
+      </div>
+      <div id="pdf-canvas-wrap">
+        <div id="pdf-placeholder">
+          <div class="big-icon">📑</div>
+          <div>Upload a PDF to begin reading</div>
+        </div>
+        <img id="pdf-img" style="display:none;"/>
+      </div>
+    </div>
+
+    <div id="pdf-notes-col">
+      <div id="pdf-notes-header">📝 Notes</div>
+      <textarea id="pdf-notes-area" placeholder="Jot notes while reading..."></textarea>
+      <div id="pdf-text-extract">
+        <div class="extract-title">Extracted Text</div>
+        <div id="pdf-extract-content" style="white-space:pre-wrap;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────── SEARCH PANEL ─────── -->
+  <div class="panel" id="search-panel">
+    <div id="search-top">
+      <h2>🔍 Academic Source Finder</h2>
+      <div id="search-row">
+        <input type="text" id="search-input" placeholder="Enter research topic or keywords..."
+               onkeydown="if(event.key==='Enter') runSearch()"/>
+        <button class="search-go-btn" onclick="runSearch()">Search</button>
+      </div>
+      <div id="source-toggles">
+        <div class="source-toggle on" data-source="semantic_scholar" onclick="toggleSource(this)">Semantic Scholar</div>
+        <div class="source-toggle on" data-source="arxiv" onclick="toggleSource(this)">arXiv</div>
+        <div class="source-toggle" data-source="google_scholar" onclick="toggleSource(this)">Google Scholar</div>
+        <div class="source-toggle" data-source="emerald" onclick="toggleSource(this)">Emerald Insight</div>
+      </div>
+    </div>
+    <div id="search-results-area">
+      <div id="search-spinner">
+        <div class="spinner-ring"></div><br>Crawling academic databases...
+      </div>
+      <div id="results-wrap">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;" id="results-header" style="display:none">
+          <span id="results-count" style="font-size:.85rem; color:var(--text2);"></span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <label style="font-size:.8rem; color:var(--text3);">Cite as:</label>
+            <select id="cite-style-select" onchange="refreshCitations()">
+              <option value="apa">APA</option>
+              <option value="mla">MLA</option>
+              <option value="chicago">Chicago</option>
+              <option value="harvard">Harvard</option>
+              <option value="ieee">IEEE</option>
+            </select>
+            <button class="top-btn" onclick="exportResults()">Export CSV</button>
+          </div>
+        </div>
+        <div id="results-table-wrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────── BRAINSTORM PANEL ─────── -->
+  <div class="panel" id="brainstorm-panel">
+    <div id="brainstorm-tools">
+      <div class="brainstorm-card">
+        <h4>📋 Outline Generator</h4>
+        <input class="topic-input" id="outline-topic" placeholder="Research topic..."/>
+        <select class="topic-input" id="outline-type">
+          <option value="research">Research Paper</option>
+          <option value="literature_review">Literature Review</option>
+          <option value="essay">Academic Essay</option>
+        </select>
+        <button class="gen-btn" onclick="generateOutline()">Generate Outline</button>
+      </div>
+      <div class="brainstorm-card">
+        <h4>🗺️ Mind Map</h4>
+        <input class="topic-input" id="mindmap-topic" placeholder="Central topic..."/>
+        <button class="gen-btn" onclick="generateMindMap()">Draw Mind Map</button>
+      </div>
+      <div class="brainstorm-card">
+        <h4>📝 Research Questions</h4>
+        <input class="topic-input" id="rq-topic" placeholder="Topic area..."/>
+        <button class="gen-btn" onclick="generateRQ()">Generate RQs</button>
+      </div>
+    </div>
+
+    <div id="brainstorm-main">
+      <div style="display:flex; gap:14px; margin-bottom:14px; align-items:center;">
+        <h3 style="font-family:var(--font-display); font-size:1.1rem; color:var(--text);">
+          Brainstorm Workspace
+        </h3>
+        <button class="top-btn" onclick="insertOutlineToEditor()">→ Send to Editor</button>
+      </div>
+
+      <div id="outline-output"></div>
+
+      <div id="mindmap-canvas">
+        <svg id="mindmap-svg" width="100%" height="100%"></svg>
+      </div>
+
+      <div style="margin-top:14px;">
+        <h4 style="font-size:.9rem; color:var(--text2); margin-bottom:10px;">📚 Section Templates</h4>
+        <div class="template-grid" id="template-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────── SETTINGS PANEL ─────── -->
+  <div class="panel" id="settings-panel">
+    <div class="settings-section">
+      <h3>🎨 Theme</h3>
+      <div class="theme-chips">
+        <div class="theme-chip active" onclick="setTheme('dark')">
+          <div class="theme-dot" style="background:#1a1f2e"></div>Dark
+        </div>
+        <div class="theme-chip" onclick="setTheme('light')">
+          <div class="theme-dot" style="background:#f8f6f1; border:1px solid #ccc"></div>Light
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>🎨 Color Scheme</h3>
+      <div class="scheme-grid">
+        <div class="scheme-card active" onclick="setScheme('midnight', this)">
+          <div class="scheme-preview">
+            <div class="scheme-dot" style="background:#0c0e14"></div>
+            <div class="scheme-dot" style="background:#7c9ef5"></div>
+            <div class="scheme-dot" style="background:#c9a84c"></div>
+          </div>
+          <div class="scheme-label">Midnight Blue</div>
+        </div>
+        <div class="scheme-card" onclick="setScheme('forest', this)">
+          <div class="scheme-preview">
+            <div class="scheme-dot" style="background:#080f0a"></div>
+            <div class="scheme-dot" style="background:#5ebc8a"></div>
+            <div class="scheme-dot" style="background:#c4a040"></div>
+          </div>
+          <div class="scheme-label">Forest</div>
+        </div>
+        <div class="scheme-card" onclick="setScheme('crimson', this)">
+          <div class="scheme-preview">
+            <div class="scheme-dot" style="background:#0f0808"></div>
+            <div class="scheme-dot" style="background:#e06060"></div>
+            <div class="scheme-dot" style="background:#d4a040"></div>
+          </div>
+          <div class="scheme-label">Crimson</div>
+        </div>
+        <div class="scheme-card" onclick="setScheme('amber', this)">
+          <div class="scheme-preview">
+            <div class="scheme-dot" style="background:#0e0b06"></div>
+            <div class="scheme-dot" style="background:#d4944a"></div>
+            <div class="scheme-dot" style="background:#e0b040"></div>
+          </div>
+          <div class="scheme-label">Amber</div>
+        </div>
+        <div class="scheme-card" onclick="setScheme('pearl', this)">
+          <div class="scheme-preview">
+            <div class="scheme-dot" style="background:#f8f6f1; border:1px solid #ccc"></div>
+            <div class="scheme-dot" style="background:#4a6eb8"></div>
+            <div class="scheme-dot" style="background:#9a7020"></div>
+          </div>
+          <div class="scheme-label">Pearl (Light)</div>
+        </div>
+        <div class="scheme-card" onclick="setScheme('sky', this)">
+          <div class="scheme-preview">
+            <div class="scheme-dot" style="background:#f0f5fb; border:1px solid #ccc"></div>
+            <div class="scheme-dot" style="background:#2c7ce0"></div>
+            <div class="scheme-dot" style="background:#c08830"></div>
+          </div>
+          <div class="scheme-label">Sky (Light)</div>
+        </div>
+        <div class="scheme-card" onclick="setScheme('sage', this)">
+          <div class="scheme-preview">
+            <div class="scheme-dot" style="background:#f2f5f0; border:1px solid #ccc"></div>
+            <div class="scheme-dot" style="background:#38885a"></div>
+            <div class="scheme-dot" style="background:#a87828"></div>
+          </div>
+          <div class="scheme-label">Sage (Light)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>✍️ Editor</h3>
+      <div class="setting-row">
+        <span class="setting-label">Font Size</span>
+        <div class="setting-control" style="display:flex;align-items:center;gap:6px;">
+          <input type="range" min="12" max="22" value="15" id="font-size-range"
+                 oninput="setFontSize(this.value)"/>
+          <span id="font-size-val">15px</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Line Height</span>
+        <div class="setting-control">
+          <select onchange="document.getElementById('editor-area').style.lineHeight=this.value">
+            <option value="1.6">Compact (1.6)</option>
+            <option value="1.85" selected>Standard (1.85)</option>
+            <option value="2.2">Spacious (2.2)</option>
+            <option value="2.8">Double (2.8)</option>
+          </select>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Editor Font</span>
+        <div class="setting-control">
+          <select onchange="setEditorFont(this.value)">
+            <option value="'Lora', Georgia, serif">Lora (Serif)</option>
+            <option value="'Playfair Display', Georgia, serif">Playfair Display</option>
+            <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+          </select>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Auto-save (every 60s)</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autosave-toggle" checked onchange="toggleAutosave(this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Spell check on type</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="spellcheck-toggle" onchange="liveSpellCheck=this.checked"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>ℹ️ About AcadWrite</h3>
+      <p style="font-size:.85rem; color:var(--text2); line-height:1.8;">
+        AcadWrite is a free, open-source academic writing assistant built with Python + Flask.
+        It includes a rich text editor, PDF viewer, academic source crawler
+        (Semantic Scholar, arXiv, Google Scholar, Emerald), synonym lookup,
+        spell-checking, outline generation, mind mapping, and session management.
+        <br><br>No LLM or AI models are used — all intelligence is rule-based and human-guided.
+      </p>
+    </div>
+  </div>
+
+</div><!-- /workspace -->
+
+<!-- ═════════════════ SESSIONS MODAL ═════════════════ -->
+<div id="sessions-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>📂 Saved Sessions</h3>
+      <button class="modal-close" onclick="hideSessions()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="sessions-list">
+        <div style="text-align:center; color:var(--text3); padding:20px; font-size:.85rem;">
+          No saved sessions yet
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="top-btn" onclick="hideSessions()">Close</button>
+      <button class="top-btn primary" onclick="saveSession(); hideSessions();">Save Current</button>
+    </div>
+  </div>
+</div>
+
+<!-- Citation helper modal -->
+<div id="cite-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; align-items:center; justify-content:center;">
+  <div class="modal-box" style="width:460px;">
+    <div class="modal-header">
+      <h3>📎 Format Citation</h3>
+      <button class="modal-close" onclick="document.getElementById('cite-modal').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex; flex-direction:column; gap:8px;">
+      <input class="topic-input" id="cite-authors" placeholder="Author(s) — e.g. Smith, J. & Jones, K."/>
+      <input class="topic-input" id="cite-year" placeholder="Year — e.g. 2023"/>
+      <input class="topic-input" id="cite-title" placeholder="Title of the work"/>
+      <input class="topic-input" id="cite-url" placeholder="URL or DOI"/>
+      <div id="cite-result" style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:10px; font-size:.82rem; color:var(--text2); min-height:48px; font-family:var(--font-mono);"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="top-btn" onclick="copyCiteResult()">Copy</button>
+      <button class="top-btn" onclick="insertCiteToEditor()">Insert in Editor</button>
+      <button class="top-btn primary" onclick="buildCitation()">Format</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- ═════════════════ JAVASCRIPT ═════════════════ -->
+<script>
+// ─── State ───────────────────────────────────────────────────────────────────
+let currentTab = 'editor';
+let sessionId = null;
+let searchResults = [];
+let pdfFiles = [];       // [{filename, original_name, pages}]
+let activePdf = null;    // {filename, page, zoom, pages}
+let statsTimer = null;
+let autosaveInterval = null;
+let liveSpellCheck = false;
+let acDebounce = null;
+
+// ─── Tab switching ────────────────────────────────────────────────────────────
+function switchTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tab + '-panel').classList.add('active');
+  btn.classList.add('active');
+  currentTab = tab;
+  if (tab === 'brainstorm') renderTemplateGrid();
+  if (tab === 'pdf') refreshPdfList();
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+function toast(msg, type='info', ms=2800) {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), ms);
+}
+
+// ─── Editor helpers ───────────────────────────────────────────────────────────
+function formatDoc(cmd, value=null) {
+  document.execCommand(cmd, false, value);
+  document.getElementById('editor-area').focus();
+}
+
+function applyHeading(tag) {
+  if (!tag) { formatDoc('formatBlock', 'p'); return; }
+  formatDoc('formatBlock', tag);
+  document.getElementById('heading-select').value = '';
+}
+
+function setEditorFont(font) {
+  document.getElementById('editor-area').style.fontFamily = font;
+}
+
+function setFontSize(sz) {
+  document.querySelector('html').style.fontSize = sz + 'px';
+  document.getElementById('font-size-val').textContent = sz + 'px';
+}
+
+function toggleSidebar(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('collapsed');
+}
+
+// ─── Word stats ───────────────────────────────────────────────────────────────
+function onEditorInput() {
+  clearTimeout(statsTimer);
+  statsTimer = setTimeout(updateStats, 600);
+  if (liveSpellCheck) { clearTimeout(acDebounce); acDebounce = setTimeout(runSpellCheck, 1200); }
+}
+
+function updateStats() {
+  const text = document.getElementById('editor-area').innerText || '';
+  fetch('/api/word_count', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({text})
+  })
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('stat-words').textContent = d.words;
+    document.getElementById('stat-sents').textContent = d.sentences;
+    document.getElementById('stat-paras').textContent = d.paragraphs;
+    document.getElementById('stat-read').textContent = d.estimated_read_min;
+    document.getElementById('stat-readlevel').textContent = d.reading_level;
+    const fill = document.getElementById('readability-fill');
+    fill.style.width = d.reading_ease + '%';
+    fill.style.background = d.reading_ease > 60 ? 'var(--green)' : d.reading_ease > 35 ? 'var(--gold)' : 'var(--accent)';
+  });
+}
+
+// ─── Synonym lookup ────────────────────────────────────────────────────────────
+function onWordSelect() {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const word = sel.toString().trim().replace(/[^a-zA-Z]/g, '');
+  if (!word || word.length < 2) return;
+  lookupSynonyms(word);
+}
+
+function onEditorKeyUp(e) {
+  // Ctrl+S save
+  if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveSession(); }
+  // Double-click word via keyboard not needed — mouse handles it
+}
+
+function lookupSynonyms(word) {
+  document.getElementById('selected-word-label').textContent = word;
+  document.getElementById('synonyms-container').innerHTML =
+    '<span style="font-size:.78rem; color:var(--text3);">Loading...</span>';
+  fetch('/api/synonyms', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({word})
+  })
+  .then(r => r.json())
+  .then(d => {
+    const cont = document.getElementById('synonyms-container');
+    if (!d.synonyms.length) {
+      cont.innerHTML = '<span style="font-size:.78rem; color:var(--text3);">No synonyms found</span>';
+      return;
+    }
+    cont.innerHTML = d.synonyms.map(s =>
+      `<span class="synonym-chip" onclick="insertSynonym('${s}')">${s}</span>`
+    ).join('');
+  });
+}
+
+function insertSynonym(word) {
+  document.getElementById('editor-area').focus();
+  const sel = window.getSelection();
+  if (sel && !sel.isCollapsed) {
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(document.createTextNode(word));
+  } else {
+    document.execCommand('insertText', false, word);
+  }
+  toast(`Inserted: ${word}`, 'success', 1500);
+}
+
+// ─── Spell check ─────────────────────────────────────────────────────────────
+function runSpellCheck() {
+  const text = document.getElementById('editor-area').innerText || '';
+  fetch('/api/spellcheck', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({text})
+  })
+  .then(r => r.json())
+  .then(d => {
+    const el = document.getElementById('spell-errors-list');
+    if (!d.errors.length) {
+      el.innerHTML = '<span style="color:var(--green)">✓ No spelling errors found</span>';
+      toast('No spelling errors!', 'success');
+      return;
+    }
+    el.innerHTML = d.errors.map(err => `
+      <div style="margin-bottom:6px; padding:6px 8px; background:var(--bg3); border-radius:5px; border-left:2px solid var(--red);">
+        <strong style="color:var(--red)">${err.word}</strong><br>
+        <span style="color:var(--text3);">Suggestions: </span>
+        ${err.suggestions.map(s =>
+          `<span class="synonym-chip" onclick="replaceWord('${err.word}','${s}')" style="font-size:.72rem;">${s}</span>`
+        ).join('')}
+      </div>
+    `).join('');
+    toast(`${d.errors.length} spelling issues found`, 'error');
+  });
+}
+
+function replaceWord(old, replacement) {
+  const area = document.getElementById('editor-area');
+  area.innerHTML = area.innerHTML.replace(
+    new RegExp(`\\b${old}\\b`, 'g'), replacement
+  );
+  toast(`Replaced "${old}" → "${replacement}"`, 'success', 1800);
+}
+
+// ─── Autocomplete ─────────────────────────────────────────────────────────────
+function getAutoComplete() {
+  const text = document.getElementById('editor-area').innerText || '';
+  fetch('/api/autocomplete', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({text})
+  })
+  .then(r => r.json())
+  .then(d => {
+    showAcDropdown(d.suggestions);
+  });
+}
+
+function showAcDropdown(items) {
+  const dd = document.getElementById('autocomplete-dropdown');
+  if (!items.length) { dd.style.display = 'none'; return; }
+  const area = document.getElementById('editor-area');
+  const rect = area.getBoundingClientRect();
+  const sel = window.getSelection();
+  let top = 80, left = 80;
+  if (sel && sel.rangeCount) {
+    const rng = sel.getRangeAt(0).getBoundingClientRect();
+    top = rng.bottom - rect.top + 4;
+    left = rng.left - rect.left;
+  }
+  dd.style.top = top + 'px';
+  dd.style.left = left + 'px';
+  dd.style.display = 'block';
+  dd.innerHTML = items.map(it =>
+    `<div class="ac-item" onclick="insertAC('${it.replace(/'/g,"\\'")}'); closeAC();">${it}</div>`
+  ).join('');
+}
+
+function insertAC(text) {
+  document.getElementById('editor-area').focus();
+  document.execCommand('insertText', false, text + ' ');
+}
+
+function closeAC() {
+  document.getElementById('autocomplete-dropdown').style.display = 'none';
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#autocomplete-dropdown')) closeAC();
+});
+
+// ─── Templates ────────────────────────────────────────────────────────────────
+let templates = {};
+fetch('/api/templates').then(r => r.json()).then(d => { templates = d.templates; });
+
+function loadTemplate(name) {
+  const t = templates[name];
+  if (!t) return;
+  const area = document.getElementById('editor-area');
+  area.focus();
+  document.execCommand('insertText', false, '\n\n' + t + '\n\n');
+  toast(`Inserted ${name} template`, 'success');
+}
+
+// ─── Transition phrases ────────────────────────────────────────────────────────
+fetch('/api/transitions').then(r => r.json()).then(d => {
+  const cont = document.getElementById('transition-sidebar');
+  const phraseCont = document.getElementById('phrases-container');
+  Object.entries(d.phrases).forEach(([cat, phrases]) => {
+    phrases.slice(0,3).forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'phrase-item';
+      el.textContent = p;
+      el.onclick = () => {
+        document.getElementById('editor-area').focus();
+        document.execCommand('insertText', false, ' ' + p + ' ');
+        toast(`Inserted: ${p}`, 'info', 1500);
+      };
+      cont.appendChild(el.cloneNode(true));
+      cont.lastChild.onclick = el.onclick;
+      phraseCont.appendChild(el);
+    });
+  });
+});
+
+// ─── PDF viewer ───────────────────────────────────────────────────────────────
+function onPdfDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('dragover');
+  const files = e.dataTransfer.files;
+  if (!files.length) return;
+  uploadPDFFiles(files);
+}
+
+function uploadPDFs(input) {
+  uploadPDFFiles(input.files);
+}
+
+function uploadPDFFiles(files) {
+  Array.from(files).forEach(file => {
+    if (!file.name.toLowerCase().endsWith('.pdf')) { toast('Only PDF files', 'error'); return; }
+    const fd = new FormData();
+    fd.append('file', file);
+    toast(`Uploading ${file.name}...`);
+    fetch('/api/pdf/upload', { method: 'POST', body: fd })
+      .then(r => r.json())
+      .then(d => {
+        if (d.error) { toast(d.error, 'error'); return; }
+        toast(`Loaded: ${d.original_name} (${d.pages} pages)`, 'success');
+        refreshPdfList();
+      });
+  });
+}
+
+function refreshPdfList() {
+  fetch('/api/pdf/list').then(r => r.json()).then(d => {
+    pdfFiles = d.pdfs;
+    const list = document.getElementById('pdf-list');
+    // Keep upload zone
+    const zone = document.getElementById('upload-zone');
+    list.innerHTML = '';
+    list.appendChild(zone);
+    pdfFiles.forEach(pdf => {
+      const item = document.createElement('div');
+      item.className = 'pdf-item' + (activePdf && activePdf.filename === pdf.filename ? ' active' : '');
+      item.innerHTML = `
+        <div class="pdf-item-name" title="${pdf.original_name}">${pdf.original_name}</div>
+        <div class="pdf-item-meta">${pdf.pages} pages · ${pdf.size_kb} KB</div>`;
+      item.onclick = () => openPdf(pdf);
+      list.appendChild(item);
+    });
+  });
+}
+
+function openPdf(pdf) {
+  activePdf = { filename: pdf.filename, page: 0, zoom: 1.5, pages: pdf.pages };
+  renderPdfPage();
+  // Update active state
+  document.querySelectorAll('.pdf-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget && event.currentTarget.classList.add('active');
+}
+
+function renderPdfPage() {
+  if (!activePdf) return;
+  fetch('/api/pdf/page', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      filename: activePdf.filename,
+      page: activePdf.page,
+      zoom: activePdf.zoom
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('pdf-placeholder').style.display = 'none';
+    const img = document.getElementById('pdf-img');
+    img.src = d.image;
+    img.style.display = 'block';
+    document.getElementById('pdf-page-num').textContent = activePdf.page + 1;
+    document.getElementById('pdf-page-total').textContent = activePdf.pages;
+    document.getElementById('pdf-extract-content').textContent = d.text;
+  });
+}
+
+function pdfNav(dir) {
+  if (!activePdf) return;
+  const newPage = activePdf.page + dir;
+  if (newPage < 0 || newPage >= activePdf.pages) return;
+  activePdf.page = newPage;
+  renderPdfPage();
+}
+
+function pdfZoom(delta) {
+  if (!activePdf) return;
+  activePdf.zoom = Math.max(0.5, Math.min(3.0, activePdf.zoom + delta));
+  renderPdfPage();
+}
+
+function extractToEditor() {
+  const text = document.getElementById('pdf-extract-content').textContent;
+  if (!text) { toast('No text to extract', 'error'); return; }
+  document.getElementById('editor-area').focus();
+  document.execCommand('insertText', false, '\n\n' + text.slice(0, 2000) + '\n\n');
+  switchTab('editor', document.querySelector('[data-tab="editor"]'));
+  toast('Text extracted to editor', 'success');
+}
+
+// ─── Academic Search ──────────────────────────────────────────────────────────
+function toggleSource(el) {
+  el.classList.toggle('on');
+}
+
+function runSearch() {
+  const query = document.getElementById('search-input').value.trim();
+  if (!query) { toast('Enter a search query', 'error'); return; }
+  const sources = Array.from(document.querySelectorAll('.source-toggle.on'))
+    .map(el => el.dataset.source);
+  if (!sources.length) { toast('Select at least one source', 'error'); return; }
+
+  document.getElementById('search-spinner').classList.add('show');
+  document.getElementById('results-table-wrap').innerHTML = '';
+  document.getElementById('results-count').textContent = '';
+
+  fetch('/api/search', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({query, sources})
+  })
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('search-spinner').classList.remove('show');
+    searchResults = d.results || [];
+    document.getElementById('results-header').style.display = 'flex';
+    document.getElementById('results-count').textContent =
+      `${searchResults.length} results found for "${query}"`;
+    renderResultsTable();
+    toast(`Found ${searchResults.length} academic sources`, 'success');
+  })
+  .catch(() => {
+    document.getElementById('search-spinner').classList.remove('show');
+    toast('Search failed — check network', 'error');
+  });
+}
+
+function renderResultsTable() {
+  const style = document.getElementById('cite-style-select').value;
+  const wrap = document.getElementById('results-table-wrap');
+  if (!searchResults.length) {
+    wrap.innerHTML = '<div style="text-align:center; color:var(--text3); padding:40px;">No results</div>';
+    return;
+  }
+  const rows = searchResults.map((r, i) => {
+    const cite = buildCiteStr(r, style, i+1);
+    return `<tr>
+      <td style="white-space:nowrap;">
+        <div>${r.authors}</div>
+        <div style="font-size:.72rem; color:var(--text3);">${r.year}</div>
+      </td>
+      <td>
+        <div class="result-title">${r.title}</div>
+        <span class="result-source">${r.source}</span>
+      </td>
+      <td>
+        ${r.link ? `<a href="${r.link}" target="_blank" style="font-size:.78rem;">🔗 View</a>` : '—'}
+        ${r.pdf ? `<br><a href="${r.pdf}" target="_blank" style="font-size:.78rem; color:var(--green);">📄 PDF</a>` : ''}
+      </td>
+      <td>
+        <button class="copy-cite-btn" onclick="copyCite(${i})">Copy cite</button>
+        <button class="copy-cite-btn" onclick="insertCite(${i})" style="margin-top:3px;">→ Editor</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `<table id="results-table">
+    <thead><tr>
+      <th>Author(s) / Year</th>
+      <th>Research Title</th>
+      <th>Link</th>
+      <th>Cite</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function buildCiteStr(r, style, n=1) {
+  const date = new Date().toLocaleDateString('en-GB');
+  const templates = {
+    apa: `${r.authors} (${r.year}). ${r.title}. ${r.link}`,
+    mla: `${r.authors}. "${r.title}." ${r.year}. ${r.link}`,
+    chicago: `${r.authors}. "${r.title}." ${r.year}. ${r.link}`,
+    harvard: `${r.authors} ${r.year}, '${r.title}', viewed ${date}, <${r.link}>`,
+    ieee: `[${n}] ${r.authors}, "${r.title}," ${r.year}. [Online]. Available: ${r.link}`,
+  };
+  return templates[style] || templates.apa;
+}
+
+function refreshCitations() { renderResultsTable(); }
+
+function copyCite(i) {
+  const r = searchResults[i];
+  const style = document.getElementById('cite-style-select').value;
+  navigator.clipboard.writeText(buildCiteStr(r, style, i+1));
+  toast('Citation copied!', 'success', 1500);
+}
+
+function insertCite(i) {
+  const r = searchResults[i];
+  const style = document.getElementById('cite-style-select').value;
+  const cite = buildCiteStr(r, style, i+1);
+  switchTab('editor', document.querySelector('[data-tab="editor"]'));
+  setTimeout(() => {
+    document.getElementById('editor-area').focus();
+    document.execCommand('insertText', false, '\n' + cite + '\n');
+    toast('Citation inserted', 'success');
+  }, 100);
+}
+
+function exportResults() {
+  if (!searchResults.length) { toast('No results to export', 'error'); return; }
+  const style = document.getElementById('cite-style-select').value;
+  const rows = [['Authors', 'Year', 'Title', 'Source', 'Link', 'Citation']];
+  searchResults.forEach((r, i) => {
+    rows.push([r.authors, r.year, r.title, r.source, r.link, buildCiteStr(r, style, i+1)]);
+  });
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'acadwrite_sources.csv';
+  a.click();
+  toast('CSV exported', 'success');
+}
+
+// ─── Citation helper ──────────────────────────────────────────────────────────
+function showCiteHelper() {
+  document.getElementById('cite-modal').style.display = 'flex';
+}
+
+function buildCitation() {
+  const style = document.getElementById('cite-style-sidebar').value;
+  const r = {
+    authors: document.getElementById('cite-authors').value || 'Author, A.',
+    year: document.getElementById('cite-year').value || new Date().getFullYear(),
+    title: document.getElementById('cite-title').value || 'Title',
+    link: document.getElementById('cite-url').value || '',
+  };
+  document.getElementById('cite-result').textContent = buildCiteStr(r, style);
+}
+
+function copyCiteResult() {
+  navigator.clipboard.writeText(document.getElementById('cite-result').textContent);
+  toast('Copied!', 'success', 1500);
+}
+
+function insertCiteToEditor() {
+  const text = document.getElementById('cite-result').textContent;
+  document.getElementById('cite-modal').style.display = 'none';
+  document.getElementById('editor-area').focus();
+  document.execCommand('insertText', false, '\n' + text + '\n');
+}
+
+// ─── Brainstorm ───────────────────────────────────────────────────────────────
+function generateOutline() {
+  const topic = document.getElementById('outline-topic').value.trim() || 'Research Topic';
+  const type = document.getElementById('outline-type').value;
+  fetch('/api/brainstorm/outline', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({topic, type})
+  })
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('outline-output').textContent = d.outline;
+    toast('Outline generated', 'success');
+  });
+}
+
+function insertOutlineToEditor() {
+  const text = document.getElementById('outline-output').textContent;
+  if (!text) { toast('Generate an outline first', 'error'); return; }
+  switchTab('editor', document.querySelector('[data-tab="editor"]'));
+  setTimeout(() => {
+    document.getElementById('editor-area').focus();
+    document.execCommand('insertText', false, '\n\n' + text + '\n\n');
+    toast('Outline inserted into editor', 'success');
+  }, 100);
+}
+
+function generateMindMap() {
+  const topic = document.getElementById('mindmap-topic').value.trim() || 'My Research';
+  fetch('/api/brainstorm/mindmap', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({topic})
+  })
+  .then(r => r.json())
+  .then(d => drawMindMap(d.nodes));
+}
+
+function drawMindMap(nodes) {
+  const svg = document.getElementById('mindmap-svg');
+  const W = svg.parentElement.offsetWidth;
+  const H = svg.parentElement.offsetHeight;
+  const cx = W / 2, cy = H / 2;
+  const root = nodes.find(n => n.level === 0);
+  const subs = nodes.filter(n => n.level === 1);
+  const angleStep = (2 * Math.PI) / subs.length;
+  const R = Math.min(W, H) * 0.33;
+
+  let html = '';
+  // Draw lines first
+  subs.forEach((n, i) => {
+    const angle = angleStep * i - Math.PI / 2;
+    const x = cx + R * Math.cos(angle);
+    const y = cy + R * Math.sin(angle);
+    html += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--border2)" stroke-width="1.5" stroke-dasharray="4"/>`;
+  });
+  // Root node
+  html += `<ellipse cx="${cx}" cy="${cy}" rx="70" ry="28" fill="var(--accent2)" opacity="0.9"/>
+  <text x="${cx}" y="${cy+5}" text-anchor="middle" fill="#fff" font-size="12" font-family="'Lora',serif">${root.label}</text>`;
+  // Sub nodes
+  const colors = ['#7c9ef5','#5ebc8a','#d4944a','#e06060','#c9a84c','#9a78d4','#58b8d4','#d46094'];
+  subs.forEach((n, i) => {
+    const angle = angleStep * i - Math.PI / 2;
+    const x = cx + R * Math.cos(angle);
+    const y = cy + R * Math.sin(angle);
+    const col = colors[i % colors.length];
+    const words = n.label.split(' ');
+    const line1 = words.slice(0, Math.ceil(words.length/2)).join(' ');
+    const line2 = words.slice(Math.ceil(words.length/2)).join(' ');
+    html += `<ellipse cx="${x}" cy="${y}" rx="60" ry="22" fill="${col}" opacity="0.85"/>
+    <text x="${x}" y="${y - (line2 ? 4 : 0)}" text-anchor="middle" fill="#fff" font-size="10" font-family="'Lora',serif">${line1}</text>`;
+    if (line2) html += `<text x="${x}" y="${y + 12}" text-anchor="middle" fill="#fff" font-size="10" font-family="'Lora',serif">${line2}</text>`;
+  });
+
+  svg.innerHTML = html;
+  toast('Mind map drawn', 'success');
+}
+
+function generateRQ() {
+  const topic = document.getElementById('rq-topic').value.trim() || 'the topic';
+  const rqs = [
+    `RQ1: What are the primary factors influencing ${topic}?`,
+    `RQ2: To what extent does [variable] affect ${topic}?`,
+    `RQ3: How do [Group A] and [Group B] differ in their experience of ${topic}?`,
+    `RQ4: What mechanisms underlie the relationship between [X] and ${topic}?`,
+    `RQ5: What interventions are most effective in addressing challenges related to ${topic}?`,
+  ];
+  const el = document.getElementById('outline-output');
+  el.textContent = '🔬 Suggested Research Questions:\n\n' + rqs.join('\n\n');
+  toast('Research questions generated', 'success');
+}
+
+function renderTemplateGrid() {
+  fetch('/api/templates').then(r => r.json()).then(d => {
+    templates = d.templates;
+    const descriptions = {
+      abstract: 'Background, objective, method, results, conclusion',
+      introduction: 'Context, problem, significance, structure',
+      literature_review: 'Thematic review, framework, gap analysis',
+      methodology: 'Design, sample, collection, analysis',
+      conclusion: 'Summary, contributions, limitations, future work',
+    };
+    const grid = document.getElementById('template-grid');
+    grid.innerHTML = Object.keys(d.templates).map(name => `
+      <div class="template-card" onclick="insertTemplateFromBrainstorm('${name}')">
+        <h5>${name.replace('_', ' ')}</h5>
+        <p>${descriptions[name] || ''}</p>
+      </div>
+    `).join('');
+  });
+}
+
+function insertTemplateFromBrainstorm(name) {
+  const t = templates[name];
+  if (!t) return;
+  switchTab('editor', document.querySelector('[data-tab="editor"]'));
+  setTimeout(() => {
+    document.getElementById('editor-area').focus();
+    document.execCommand('insertText', false, '\n\n' + t + '\n\n');
+    toast(`Inserted ${name} template`, 'success');
+  }, 120);
+}
+
+// ─── Session management ────────────────────────────────────────────────────────
+function saveSession() {
+  const text = document.getElementById('editor-area').innerHTML;
+  const notes = document.getElementById('pdf-notes-area').value;
+  const pdfsInSession = pdfFiles.map(p => p.filename);
+  const theme = document.documentElement.getAttribute('data-theme');
+  const scheme = document.documentElement.getAttribute('data-scheme');
+
+  const name = sessionId ? undefined : (prompt('Session name?', `Session ${new Date().toLocaleDateString()}`) || 'Unnamed');
+
+  fetch('/api/session/save', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      session_id: sessionId,
+      name: name || `Session ${sessionId}`,
+      text, notes,
+      pdfs: pdfsInSession,
+      search_results: searchResults,
+      theme, color_scheme: scheme
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    sessionId = d.session_id;
+    toast('Session saved ✓', 'success');
+  });
+}
+
+function showSessions() {
+  document.getElementById('sessions-modal').classList.add('show');
+  fetch('/api/session/list').then(r => r.json()).then(d => {
+    const list = document.getElementById('sessions-list');
+    if (!d.sessions.length) {
+      list.innerHTML = '<div style="text-align:center; color:var(--text3); padding:20px; font-size:.85rem;">No saved sessions</div>';
+      return;
+    }
+    list.innerHTML = d.sessions.map(s => `
+      <div class="session-item">
+        <div class="session-item-info">
+          <h4>${s.name}</h4>
+          <p>${s.word_count} words · ${s.saved_at.slice(0,16).replace('T',' ')}</p>
+        </div>
+        <div class="session-item-actions">
+          <button class="sess-btn" onclick="loadSession('${s.id}')">Load</button>
+          <button class="sess-btn del" onclick="deleteSession('${s.id}', this)">✕</button>
+        </div>
+      </div>
+    `).join('');
+  });
+}
+
+function hideSessions() {
+  document.getElementById('sessions-modal').classList.remove('show');
+}
+
+function loadSession(id) {
+  fetch(`/api/session/load/${id}`).then(r => r.json()).then(d => {
+    document.getElementById('editor-area').innerHTML = d.text || '';
+    document.getElementById('pdf-notes-area').value = d.notes || '';
+    searchResults = d.search_results || [];
+    sessionId = d.id;
+    if (d.theme) setTheme(d.theme);
+    if (d.color_scheme) {
+      document.querySelectorAll('.scheme-card').forEach(c => c.classList.remove('active'));
+      setScheme(d.color_scheme, null);
+    }
+    hideSessions();
+    updateStats();
+    toast(`Loaded: ${d.name}`, 'success');
+    if (searchResults.length) renderResultsTable();
+  });
+}
+
+function deleteSession(id, btn) {
+  fetch(`/api/session/delete/${id}`, {method:'DELETE'}).then(() => {
+    btn.closest('.session-item').remove();
+    toast('Session deleted', 'info', 1500);
+  });
+}
+
+// ─── Autosave ─────────────────────────────────────────────────────────────────
+function toggleAutosave(on) {
+  clearInterval(autosaveInterval);
+  if (on) {
+    autosaveInterval = setInterval(() => {
+      if (sessionId) { saveSession(); }
+    }, 60000);
+  }
+}
+toggleAutosave(true);
+
+// ─── Theme / scheme ────────────────────────────────────────────────────────────
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.querySelectorAll('.theme-chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.theme-chip').forEach(c => {
+    if (c.textContent.trim().toLowerCase().startsWith(theme)) c.classList.add('active');
+  });
+}
+
+const schemeThemeMap = {
+  midnight: 'dark', forest: 'dark', crimson: 'dark', amber: 'dark',
+  pearl: 'light', sky: 'light', sage: 'light'
+};
+
+function setScheme(scheme, cardEl) {
+  document.documentElement.setAttribute('data-scheme', scheme);
+  setTheme(schemeThemeMap[scheme] || 'dark');
+  document.querySelectorAll('.scheme-card').forEach(c => c.classList.remove('active'));
+  if (cardEl) cardEl.classList.add('active');
+  else {
+    document.querySelectorAll('.scheme-card').forEach(c => {
+      if (c.querySelector('.scheme-label') && c.querySelector('.scheme-label').textContent.toLowerCase().includes(scheme))
+        c.classList.add('active');
+    });
+  }
+}
+
+// ─── Editor placeholder ────────────────────────────────────────────────────────
+const editorArea = document.getElementById('editor-area');
+editorArea.addEventListener('focus', () => {
+  if (editorArea.innerHTML === '') editorArea.setAttribute('data-empty', 'true');
+});
+editorArea.addEventListener('input', () => {
+  editorArea.removeAttribute('data-empty');
+});
+// CSS for placeholder via data-empty
+const placeholderStyle = document.createElement('style');
+placeholderStyle.textContent = `
+  #editor-area:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text3);
+    font-style: italic;
+    pointer-events: none;
+    white-space: pre-wrap;
+  }
+`;
+document.head.appendChild(placeholderStyle);
+
+// ─── Keyboard shortcuts ────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveSession(); }
+  if (e.key === 'Escape') { closeAC(); hideSessions(); }
+});
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+refreshPdfList();
+document.getElementById('results-header').style.display = 'none';
+toast('AcadWrite ready — Ctrl+S to save', 'success', 3000);
+</script>
+</body>
+</html>
